@@ -1,4 +1,82 @@
-私のWEBサイト
 
-自己紹介
-趣味は読書
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>私のWEBサイト</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+			background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+			color: #fff;
+			min-height: 100vh;
+		}
+		header {
+			background: rgba(0,0,0,0.5);
+			padding: 2rem 0 1rem 0;
+			text-align: center;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+		}
+		header h1 {
+			font-size: 2.8rem;
+			margin: 0;
+			letter-spacing: 0.1em;
+		}
+		main {
+			max-width: 600px;
+			margin: 2rem auto;
+			background: rgba(255,255,255,0.08);
+			border-radius: 16px;
+			box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+			padding: 2rem;
+		}
+		h2 {
+			font-size: 2rem;
+			margin-bottom: 1rem;
+			border-bottom: 2px solid #fff3;
+			padding-bottom: 0.5rem;
+		}
+		p {
+			font-size: 1.2rem;
+			line-height: 1.7;
+		}
+		footer {
+			text-align: center;
+			padding: 1rem 0;
+			background: rgba(0,0,0,0.3);
+			position: fixed;
+			width: 100%;
+			bottom: 0;
+			font-size: 1rem;
+			color: #fff8;
+		}
+		@media (max-width: 700px) {
+			main {
+				margin: 1rem;
+				padding: 1rem;
+			}
+			header h1 {
+				font-size: 2rem;
+			}
+			h2 {
+				font-size: 1.3rem;
+			}
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<h1>私のWEBサイト</h1>
+	</header>
+	<main>
+		<h2>自己紹介</h2>
+		<p>こんにちは！私はMURAIMUNEAKIです。<br>趣味は読書です。<br>最新の技術やデザインに興味があります。</p>
+	</main>
+	<footer>
+		&copy; 2025 MURAIMUNEAKI
+	</footer>
+</body>
+</html>
