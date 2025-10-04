@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>私のWEBサイト</title>
+	<title>富山情報ビジネス専門学校 学習用サイト</title>
 	<style>
 		body {
 			margin: 0;
@@ -32,6 +32,24 @@
 			border-radius: 16px;
 			box-shadow: 0 4px 24px rgba(0,0,0,0.2);
 			padding: 2rem;
+		}
+		.cta {
+			margin-top: 2rem;
+			text-align: center;
+		}
+		.cta a {
+			display: inline-block;
+			padding: 0.8rem 1.6rem;
+			border-radius: 999px;
+			background: linear-gradient(135deg, #ffb347, #ffcc33);
+			color: #1e3c72;
+			font-weight: 700;
+			text-decoration: none;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+		.cta a:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 		}
 		.profile {
 			display: flex;
@@ -94,5 +112,8 @@
 	<footer>
 		&copy; 2025 MURAIMUNEAKI
 	</footer>
+	<div class="cta">
+		<a href="toyama-kanko.html">富山観光AIボットで旅の相談をする</a>
+	</div>
 </body>
 </html>

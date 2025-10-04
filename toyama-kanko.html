@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>富山観光AIガイド</title>
+	<style>
+		:root {
+			color-scheme: light dark;
+			--bg-gradient: radial-gradient(circle at top, #9fd6ff 0%, #f2f9ff 35%, #ffffff 60%, #e3f1ff 100%);
+			--primary: #0069b4;
+			--primary-dark: #004a80;
+			--accent: #00a0c6;
+			--text-main: #1c1c1c;
+			--text-muted: #546478;
+			--card-bg: rgba(255, 255, 255, 0.92);
+			--shadow: 0 20px 35px rgba(0, 62, 114, 0.15);
+		}
+		* {
+			box-sizing: border-box;
+		}
+		body {
+			margin: 0;
+			font-family: "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+			color: var(--text-main);
+			background: var(--bg-gradient);
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+		header {
+			padding: 3.5rem 1.5rem 2.5rem;
+			text-align: center;
+			background: linear-gradient(160deg, rgba(0, 105, 180, 0.85), rgba(0, 160, 198, 0.75)), url('https://images.unsplash.com/photo-1586528116311-ad8dd3cc7ddd?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
+			color: #fff;
+			box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+		}
+		header h1 {
+			margin: 0;
+			font-size: clamp(2.4rem, 5vw, 3.4rem);
+			letter-spacing: 0.08em;
+		}
+		header p {
+			margin: 1rem auto 0;
+			max-width: 600px;
+			font-size: clamp(1.1rem, 2.4vw, 1.3rem);
+			line-height: 1.7;
+		}
+		main {
+			flex: 1;
+			padding: 2rem 1.5rem 3rem;
+			display: grid;
+			gap: 2rem;
+			max-width: 1100px;
+			width: 100%;
+			margin: -80px auto 0;
+		}
+		.panel {
+			background: var(--card-bg);
+			border-radius: 20px;
+			padding: clamp(1.2rem, 2.8vw, 1.8rem);
+			box-shadow: var(--shadow);
+			backdrop-filter: blur(8px);
+		}
+		.panel h2 {
+			margin-top: 0;
+			font-size: 1.6rem;
+			color: var(--primary);
+		}
+		.highlights {
+			display: grid;
+			gap: 1rem;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		}
+		.highlight-card {
+			padding: 1.1rem;
+			border-radius: 16px;
+			background: rgba(0, 105, 180, 0.08);
+			border: 1px solid rgba(0, 105, 180, 0.12);
+		}
+		.highlight-card h3 {
+			margin: 0 0 0.5rem;
+		}
+		.highlight-card ul {
+			margin: 0;
+			padding-left: 1.2rem;
+			color: var(--text-muted);
+		}
+		.highlight-card a {
+			color: var(--primary-dark);
+			text-decoration: none;
+			font-weight: bold;
+		}
+		.bot-wrapper {
+			display: grid;
+			gap: 1.5rem;
+		}
+		.chat-window {
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+		}
+		.chat-log {
+			max-height: 360px;
+			overflow-y: auto;
+			padding: 1.2rem;
+			border-radius: 16px;
+			background: rgba(255,255,255,0.72);
+			border: 1px solid rgba(0,105,180,0.08);
+		}
+		.message {
+			margin-bottom: 1rem;
+			display: flex;
+			align-items: flex-start;
+			gap: 0.75rem;
+		}
+		.message:last-child {
+			margin-bottom: 0;
+		}
+		.avatar {
+			width: 38px;
+			height: 38px;
+			border-radius: 12px;
+			background: linear-gradient(135deg, var(--primary), var(--accent));
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #fff;
+			font-weight: 700;
+		}
+		.message.user .avatar {
+			background: #fff;
+			color: var(--primary);
+			border: 2px solid rgba(0,105,180,0.2);
+		}
+		.message-content {
+			padding: 0.75rem 1rem;
+			border-radius: 14px;
+			max-width: min(100%, 520px);
+			line-height: 1.6;
+			background: rgba(0,105,180,0.08);
+		}
+		.message.user .message-content {
+			background: rgba(0,160,198,0.12);
+		}
+		.chat-input {
+			display: flex;
+			gap: 0.8rem;
+			border: 1px solid rgba(0,105,180,0.12);
+			border-radius: 20px;
+			padding: 0.4rem;
+			background: rgba(255,255,255,0.9);
+		}
+		.chat-input textarea {
+			flex: 1;
+			border: none;
+			resize: none;
+			padding: 0.8rem 1rem;
+			font-size: 1rem;
+			font-family: inherit;
+			background: transparent;
+			color: inherit;
+			min-height: 70px;
+		}
+		.chat-input textarea:focus {
+			outline: none;
+		}
+		.chat-input button {
+			padding: 0 1.5rem;
+			border: none;
+			border-radius: 16px;
+			background: linear-gradient(135deg, var(--primary), var(--accent));
+			color: #fff;
+			font-weight: 600;
+			cursor: pointer;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+		.chat-input button:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 10px 20px rgba(0,105,180,0.25);
+		}
+		.preset-questions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.6rem;
+		}
+		.preset-questions button {
+			border: none;
+			padding: 0.55rem 1rem;
+			border-radius: 999px;
+			background: rgba(0,105,180,0.12);
+			color: var(--primary);
+			cursor: pointer;
+			transition: background 0.2s ease;
+		}
+		.preset-questions button:hover {
+			background: rgba(0,105,180,0.22);
+		}
+		footer {
+			text-align: center;
+			padding: 1.4rem;
+			color: var(--text-muted);
+			font-size: 0.95rem;
+		}
+		footer a {
+			color: var(--primary);
+			text-decoration: none;
+		}
+		@media (max-width: 820px) {
+			main {
+				margin-top: -60px;
+				padding: 1.5rem 1rem 2.4rem;
+			}
+		}
+		@media (max-width: 640px) {
+			header {
+				padding: 3rem 1rem 2rem;
+			}
+			.chat-input {
+				flex-direction: column;
+				padding: 0.7rem;
+			}
+			.chat-input button {
+				width: 100%;
+				padding: 0.8rem;
+			}
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<h1>富山観光AIガイド</h1>
+		<p>富山観光協会の公式情報をもとにしたバーチャルコンシェルジュが、季節ごとの楽しみ方やモデルコースをご案内します。</p>
+	</header>
+	<main>
+		<section class="panel">
+			<h2>富山の見どころハイライト</h2>
+			<div class="highlights" id="highlightCards"></div>
+		</section>
+		<section class="panel bot-wrapper">
+			<h2>観光AIボットに質問する</h2>
+			<div class="preset-questions" id="presetQuestions"></div>
+			<div class="chat-window">
+				<div class="chat-log" id="chatLog" aria-live="polite"></div>
+				<form class="chat-input" id="chatForm">
+					<textarea id="userInput" placeholder="例）春におすすめの観光地は？" required></textarea>
+					<button type="submit">質問する</button>
+				</form>
+			</div>
+		</section>
+	</main>
+	<footer>
+		情報元：<a href="https://www.info-toyama.com/" target="_blank" rel="noopener">富山県観光公式サイト とやま観光ナビ</a>
+	</footer>
+
+	<script>
+		const knowledgeBase = [
+			{
+				id: 'alps-route',
+				name: '立山黒部アルペンルート',
+				category: '自然・絶景',
+				seasons: ['春', '夏', '秋'],
+				keywords: ['立山', '雪の大谷', '室堂', '黒部ダム', '雲上散策', 'ハイキング'],
+				summary: '標高3,000m級の立山連峰を貫く山岳観光ルート。室堂平や雪の大谷ウォーク、黒部ダム放水など四季折々の絶景が楽しめる。',
+				tips: ['4月〜6月は雪の大谷が迫力満点', '夏は高山植物と雲海ハイキングが人気', '秋は紅葉とダムの放水が見どころ'],
+				link: 'https://www.info-toyama.com/spot/10003/',
+			},
+			{
+				id: 'kurobe-gorge',
+				name: '黒部峡谷トロッコ電車',
+				category: '自然・アクティビティ',
+				seasons: ['春', '夏', '秋'],
+				keywords: ['黒部峡谷', 'トロッコ', '宇奈月温泉', '紅葉', '渓谷美'],
+				summary: '宇奈月〜欅平を結ぶ山岳鉄道。渓谷美やエメラルドグリーンの黒部川を眺めながらトロッコ電車で冒険気分を味わえる。',
+				tips: ['10月〜11月の紅葉が特に人気', '宇奈月温泉と組み合わせると充実した旅に', '夏は渓谷の涼しさを求める家族連れにもおすすめ'],
+				link: 'https://www.info-toyama.com/spot/10017/',
+			},
+			{
+				id: 'gokayama',
+				name: '世界遺産 五箇山合掌造り集落',
+				category: '文化・歴史',
+				seasons: ['通年'],
+				keywords: ['五箇山', '世界遺産', '合掌造り', '相倉', '菅沼'],
+				summary: 'ユネスコ世界遺産に登録された合掌造り集落。茅葺き屋根の集落で山里の暮らしと民謡こきりこ節の文化に触れられる。',
+				tips: ['ライトアップイベントの日程を要チェック', '冬は雪景色と囲炉裏体験が魅力', '伝統工芸や郷土料理の体験施設もある'],
+				link: 'https://www.info-toyama.com/spot/10001/',
+			},
+			{
+				id: 'toyama-city',
+				name: '富山市内観光（富岩運河環水公園・ガラス美術館など）',
+				category: '市街地散策',
+				seasons: ['通年'],
+				keywords: ['富山市', '環水公園', 'ガラス美術館', 'スターバックス', 'ライトレール'],
+				summary: '富岩運河環水公園の水辺景観と世界の美しいスターバックス、隈研吾氏設計のガラス美術館など、アートと自然が融合した市内散策が楽しめる。',
+				tips: ['夜はライトアップが幻想的', '市内電車「セントラム」での移動が便利', '富山湾鮨などグルメとの組み合わせがおすすめ'],
+				link: 'https://www.info-toyama.com/spot/21028/',
+			},
+			{
+				id: 'himi',
+				name: '氷見の海とグルメ',
+				category: 'グルメ・絶景',
+				seasons: ['冬', '春'],
+				keywords: ['氷見', '寒ブリ', '海鮮', '朝市', '雨晴海岸'],
+				summary: '氷見港では冬の寒ブリをはじめ富山湾の新鮮な魚介が味わえる。雨晴海岸からの立山連峰の眺めも人気。',
+				tips: ['寒ブリシーズンは11月〜2月頃', '雨晴海岸の気嵐が見られる朝も幻想的', '氷見漁港場外市場ひみ番屋街で食べ歩きを楽しめる'],
+				link: 'https://www.info-toyama.com/spot/10008/',
+			},
+			{
+				id: 'tateyama-onsen',
+				name: '立山山麓温泉（らいちょうバレー・極楽坂）',
+				category: '温泉・アウトドア',
+				seasons: ['冬'],
+				keywords: ['スキー', 'らいちょうバレー', '極楽坂', '温泉', '立山山麓'],
+				summary: '立山山麓のスキー場と温泉エリア。良質なパウダースノーでウィンタースポーツを満喫し、温泉でじっくり温まれる。',
+				tips: ['ナイタースキーやスノーシュー体験も可能', 'アルペンルートと組み合わせた冬旅におすすめ', '親子向け雪遊び広場も充実'],
+				link: 'https://www.info-toyama.com/spot/10011/',
+			},
+			{
+				id: 'imizu',
+				name: '新湊・射水ベイエリア（海王丸パーク）',
+				category: '港町',
+				seasons: ['春', '夏', '秋'],
+				keywords: ['海王丸', 'ライトアップ', '新湊大橋', '帆船', 'ベイエリア'],
+				summary: '現役を退いた帆船「海王丸」が係留される海王丸パークでは、帆を広げる総帆展帆イベントや新湊大橋の眺望が楽しめる。',
+				tips: ['総帆展帆は年間約10回、日程チェック推奨', '夜間ライトアップがロマンチック', '近隣で白えび漁港のグルメも人気'],
+				link: 'https://www.info-toyama.com/spot/21009/',
+			},
+		];
+
+		const presetQuestions = [
+			'春におすすめのスポットは？',
+			'家族連れで楽しめる場所は？',
+			'冬の味覚を教えて',
+			'黒部峡谷の楽しみ方を知りたい',
+			'富山市内でアートに触れたい',
+			'モデルコースを提案して'
+		];
+
+		const highlightData = knowledgeBase.slice(0, 3);
+
+		const chatLog = document.getElementById('chatLog');
+		const chatForm = document.getElementById('chatForm');
+		const userInput = document.getElementById('userInput');
+		const presetContainer = document.getElementById('presetQuestions');
+		const highlightContainer = document.getElementById('highlightCards');
+
+		function createHighlightCards() {
+			highlightData.forEach(item => {
+				const card = document.createElement('article');
+				card.className = 'highlight-card';
+				card.innerHTML = `
+					<h3>${item.name}</h3>
+					<p>${item.summary}</p>
+					<ul>
+						${item.tips.map(tip => `<li>${tip}</li>`).join('')}
+					</ul>
+					<p><a href="${item.link}" target="_blank" rel="noopener">公式サイトで詳しく見る</a></p>
+				`;
+				highlightContainer.appendChild(card);
+			});
+		}
+
+		function createPresetButtons() {
+			presetQuestions.forEach(question => {
+				const button = document.createElement('button');
+				button.type = 'button';
+				button.textContent = question;
+				button.addEventListener('click', () => {
+					userInput.value = question;
+					userInput.focus();
+				});
+				presetContainer.appendChild(button);
+			});
+		}
+
+		function addMessage(role, text) {
+			const message = document.createElement('div');
+			message.className = `message ${role}`;
+			message.innerHTML = `
+				<div class="avatar" aria-hidden="true">${role === 'bot' ? 'AI' : '👤'}</div>
+				<div class="message-content">${text}</div>
+			`;
+			chatLog.appendChild(message);
+			chatLog.scrollTop = chatLog.scrollHeight;
+		}
+
+		function normalize(text) {
+			return text
+				.toLowerCase()
+				.replace(/[Ａ-Ｚａ-ｚ０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+				.replace(/[\s\u3000]+/g, ' ')
+				.trim();
+		}
+
+		function scoreItem(item, queryTokens) {
+			const fields = [item.name, item.category, item.summary, item.tips.join(' '), item.keywords.join(' ')].join(' ').toLowerCase();
+			let score = 0;
+			queryTokens.forEach(token => {
+				if (fields.includes(token)) {
+					score += 4;
+				}
+			});
+			if (item.seasons.some(season => queryTokens.includes(season))) {
+				score += 3;
+			}
+			if (/モデル|コース|行程/.test(queryTokens.join(''))) {
+				score += item.category.includes('自然') ? 1 : 2;
+			}
+			return score;
+		}
+
+		function searchKnowledgeBase(query) {
+			const normalized = normalize(query);
+			if (!normalized) return [];
+			const tokens = normalized.split(' ');
+
+			const scored = knowledgeBase
+				.map(item => ({ item, score: scoreItem(item, tokens) }))
+				.filter(entry => entry.score > 0)
+				.sort((a, b) => b.score - a.score)
+				.slice(0, 3);
+
+			return scored.map(entry => entry.item);
+		}
+
+		function buildAnswer(query) {
+			const results = searchKnowledgeBase(query);
+			if (results.length === 0) {
+				return `申し訳ありません、そのテーマに対応する情報が見つかりませんでした。<br>
+				・季節名（例：春、冬）<br>
+				・場所名（例：立山、五箇山）<br>
+				など、少し具体的に教えていただけると詳しくご案内できます。`;
+			}
+
+			const suggestions = results.map(item => {
+				const seasons = item.seasons.join('・');
+				const tips = item.tips.map(tip => `・${tip}`).join('<br>');
+				return `
+					<strong>${item.name}</strong>（カテゴリ：${item.category}／おすすめ時期：${seasons}）<br>
+					${item.summary}<br>
+					${tips}<br>
+					<a href="${item.link}" target="_blank" rel="noopener">公式サイトで詳細を見る</a>
+				`;
+			}).join('<hr style="border:none;border-top:1px solid rgba(0,105,180,0.1);">');
+
+			return suggestions;
+		}
+
+		chatForm.addEventListener('submit', event => {
+			event.preventDefault();
+			const query = userInput.value.trim();
+			if (!query) return;
+
+			addMessage('user', query);
+			const answer = buildAnswer(query);
+			addMessage('bot', answer);
+			userInput.value = '';
+			userInput.focus();
+		});
+
+		// 初期化処理
+		createHighlightCards();
+		createPresetButtons();
+		addMessage('bot', 'こんにちは。富山観光AIガイドです。季節のおすすめやモデルコース、グルメ情報など、お気軽に質問してください。');
+	</script>
+</body>
+</html>
