@@ -84,26 +84,9 @@
 		</div>
 	</header>
 	<main>
-		<section class="student-videos" aria-labelledby="studentVideosHeading" style="margin-bottom:2.5rem;">
-			<h2 id="studentVideosHeading" style="font-size:1.5rem;font-weight:700;margin-bottom:1.2rem;color:var(--brand);text-align:center;">学生が作った動画集</h2>
-			<div style="display:grid;gap:2.2rem;max-width:900px;margin:0 auto;">
-				<div style="background:var(--bg-alt);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.2rem;">
-					<h3 style="font-size:1.1rem;margin-bottom:.7rem;">AIの進化が仕事と生活に与える影響とは？</h3>
-					<div style="aspect-ratio:16/9;max-width:100%;"><iframe width="100%" height="360" src="https://www.youtube.com/embed/OtGPO2W6Xl8" title="AIの進化が仕事と生活に与える影響とは？" allowfullscreen style="border-radius:8px;border:none;width:100%;height:100%;"></iframe></div>
-				</div>
-				<div style="background:var(--bg-alt);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.2rem;">
-					<h3 style="font-size:1.1rem;margin-bottom:.7rem;">縄文時代が1万年続いたのは、天皇陛下が1万歳まで生きたから</h3>
-					<div style="aspect-ratio:16/9;max-width:100%;"><iframe width="100%" height="360" src="https://www.youtube.com/embed/rCUcyPV6GhA" title="縄文時代が1万年続いたのは、天皇陛下が1万歳まで生きたから" allowfullscreen style="border-radius:8px;border:none;width:100%;height:100%;"></iframe></div>
-				</div>
-				<div style="background:var(--bg-alt);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.2rem;">
-					<h3 style="font-size:1.1rem;margin-bottom:.7rem;">新幹線の進化がすごい！日本の高速鉄道の歴史と未来</h3>
-					<div style="aspect-ratio:16/9;max-width:100%;"><iframe width="100%" height="360" src="https://www.youtube.com/embed/8Ljgvt4H7Bs" title="新幹線の進化がすごい！日本の高速鉄道の歴史と未来" allowfullscreen style="border-radius:8px;border:none;width:100%;height:100%;"></iframe></div>
-				</div>
-			</div>
-		</section>
 		<section class="hero" aria-labelledby="heroHeading">
-			<h2 id="heroHeading" class="hero-head">富山情報ビジネス専門学校 YouTube 動画集</h2>
-			<p class="hero-lead">公式チャンネル (学生生活 / 授業紹介 / イベント) から最新動画を自動取得し、カテゴリやキーワードで素早く探せます。学科説明やオープンキャンパス準備、授業の振り返りに活用してください。</p>
+			<h2 id="heroHeading" class="hero-head">学生が作った動画集</h2>
+			<p class="hero-lead">学生が作成した動画や、公式チャンネルの動画をまとめて一覧表示しています。カテゴリやキーワードで素早く探せます。</p>
 			<div class="filters" role="toolbar" aria-label="カテゴリフィルタ" id="filterBar"></div>
 			<div id="resultCount" class="meta" aria-live="polite"></div>
 		</section>
@@ -116,10 +99,25 @@
 		<p>&copy; <span id="year"></span> 富山情報ビジネス専門学校 / 非公式 学習用ギャラリー. YouTube サムネイルおよびコンテンツはそれぞれの著作権者に帰属します。</p>
 		<p>データ取得: YouTube Data API v3 / <a class="inline" href="https://www.youtube.com/@ugai-student/videos" target="_blank" rel="noopener">公式チャンネル</a></p>
 	</footer>
+	<style>
+	/* 4列グリッド対応 */
+	.video-grid {
+		--min: 240px;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(var(--min), 1fr));
+		gap: 1.1rem;
+		align-items: start;
+	}
+	@media (min-width: 1200px) {
+		.video-grid {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+	</style>
 	<script>
 	const CONFIG = {
 		channelUrl: 'https://www.youtube.com/@ugai-student',
-		channelId: 'UCsGMphgDuwZQzQpimeISFYA', // 仮: 実際のチャンネルID に更新してください
+		channelId: 'UCsGMphgDuwZQzQpimeISFYA',
 		maxResults: 48,
 		apiKey: localStorage.getItem('YT_API_KEY') || '',
 		categoryMatchers: [
@@ -132,7 +130,36 @@
 	};
 
 	const state = {
-		all: [],
+		all: [
+			// 追加動画（手動）
+			{
+				id: 'OtGPO2W6Xl8',
+				title: 'AIの進化が仕事と生活に与える影響とは？',
+				description: '',
+				published: '2025-01-01T00:00:00Z',
+				thumbnail: 'https://img.youtube.com/vi/OtGPO2W6Xl8/hqdefault.jpg',
+				duration: '',
+				category: 'その他'
+			},
+			{
+				id: 'rCUcyPV6GhA',
+				title: '縄文時代が1万年続いたのは、天皇陛下が1万歳まで生きたから',
+				description: '',
+				published: '2025-01-01T00:00:00Z',
+				thumbnail: 'https://img.youtube.com/vi/rCUcyPV6GhA/hqdefault.jpg',
+				duration: '',
+				category: 'その他'
+			},
+			{
+				id: '8Ljgvt4H7Bs',
+				title: '新幹線の進化がすごい！日本の高速鉄道の歴史と未来',
+				description: '',
+				published: '2025-01-01T00:00:00Z',
+				thumbnail: 'https://img.youtube.com/vi/8Ljgvt4H7Bs/hqdefault.jpg',
+				duration: '',
+				category: 'その他'
+			}
+		],
 		filtered: [],
 		category: 'ALL',
 		keyword: ''
@@ -251,7 +278,8 @@
 			if(!detailRes.ok) throw new Error('Video details error');
 			const detailData = await detailRes.json();
 			const vids = detailData.items.map(toVideoObj);
-			load(vids);
+			// 既存の手動追加動画と統合
+			load([...state.all, ...vids]);
 		} catch(err){
 			console.error(err);
 			await loadLocal();
@@ -286,10 +314,10 @@
 			const res = await fetch('data/videos.json');
 			if(!res.ok) throw new Error('local json missing');
 			const data = await res.json();
-			load(data.map(v => ({...v, category: categorize(v.title)})));
+			load([...state.all, ...data.map(v => ({...v, category: categorize(v.title)}))]);
 		} catch(err){
 			console.warn('ローカル動画データがありません。空の状態で表示します。');
-			load([]);
+			load(state.all);
 		}
 	}
 
