@@ -7,8 +7,8 @@
 	<title>富山情報ビジネス専門学校 動画集</title>
 	<meta name="description" content="富山情報ビジネス専門学校 学生向け / 受験生向け YouTube 動画ギャラリー" />
 	<meta name="color-scheme" content="light dark" />
-	<link rel="preconnect" href="https://i.ytimg.com"/>
-	<link rel="preconnect" href="https://www.youtube.com"/>
+	<link rel="preconnect" href="hhttps://www.youtube.com/@ugai-student/videos"/>
+	<link rel="preconnect" href="https://www.youtube.com/@ugai-student/videos"/>
 	<style>
 		:root {
 			--bg: #f8f9fb;
@@ -40,9 +40,7 @@
 		.tagline { font-size:.78rem; font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:var(--text-soft); display:none; }
 		@media (min-width:680px){ .tagline{display:block;} }
 		button, input { font-family:inherit; }
-		.search-bar { flex:1; display:flex; gap:.5rem; }
-		.search-bar input { flex:1; padding:.65rem .9rem; border:1px solid var(--border); border-radius: var(--radius); font-size:.95rem; background:var(--bg-alt); color:var(--text); box-shadow: inset 0 0 0 1px rgba(0,0,0,0); transition:.25s; }
-		.search-bar input:focus { outline:none; box-shadow:0 0 0 3px rgba(13,93,252,.25); }
+
 		.theme-toggle { background:var(--bg-alt); border:1px solid var(--border); border-radius: var(--radius); padding:.55rem .9rem; cursor:pointer; display:flex; align-items:center; gap:.4rem; font-size:.8rem; font-weight:600; color:var(--text-soft); }
 		.theme-toggle:hover { color:var(--text); }
 		main { max-width:1200px; margin:0 auto; padding:1.2rem 1.2rem 4rem; }
@@ -75,15 +73,30 @@
 <body>
 	<header>
 		<div class="inner">
-			<h1 aria-label="富山情報ビジネス専門学校 動画集"><span>TOBI</span> 動画集</h1>
+			<h1 aria-label="富山情報ビジネス専門学校 動画集"><span>UGAI</span> 動画集</h1>
 			<div class="tagline" aria-hidden="true">富山情報ビジネス専門学校 YouTube ライブラリ</div>
-			<form class="search-bar" role="search" aria-label="動画検索" onsubmit="return false;">
-				<input id="searchInput" type="search" placeholder="キーワード検索 (例: 入学案内 / 授業 / 行事)" autocomplete="off" aria-controls="videoList" aria-describedby="resultCount" />
-			</form>
+
 			<button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false" aria-label="テーマ切替">🌗 <span class="label">Light</span></button>
 		</div>
 	</header>
 	<main>
+		<section class="student-videos" aria-labelledby="studentVideosHeading" style="margin-bottom:2.5rem;">
+			<h2 id="studentVideosHeading" style="font-size:1.5rem;font-weight:700;margin-bottom:1.2rem;color:var(--brand);text-align:center;">学生が作った動画集</h2>
+			<div style="display:grid;gap:2.2rem;max-width:900px;margin:0 auto;">
+				<div style="background:var(--bg-alt);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.2rem;">
+					<h3 style="font-size:1.1rem;margin-bottom:.7rem;">AIの進化が仕事と生活に与える影響とは？</h3>
+					<div style="aspect-ratio:16/9;max-width:100%;"><iframe width="100%" height="360" src="https://www.youtube.com/embed/OtGPO2W6Xl8" title="AIの進化が仕事と生活に与える影響とは？" allowfullscreen style="border-radius:8px;border:none;width:100%;height:100%;"></iframe></div>
+				</div>
+				<div style="background:var(--bg-alt);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.2rem;">
+					<h3 style="font-size:1.1rem;margin-bottom:.7rem;">縄文時代が1万年続いたのは、天皇陛下が1万歳まで生きたから</h3>
+					<div style="aspect-ratio:16/9;max-width:100%;"><iframe width="100%" height="360" src="https://www.youtube.com/embed/rCUcyPV6GhA" title="縄文時代が1万年続いたのは、天皇陛下が1万歳まで生きたから" allowfullscreen style="border-radius:8px;border:none;width:100%;height:100%;"></iframe></div>
+				</div>
+				<div style="background:var(--bg-alt);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.2rem;">
+					<h3 style="font-size:1.1rem;margin-bottom:.7rem;">新幹線の進化がすごい！日本の高速鉄道の歴史と未来</h3>
+					<div style="aspect-ratio:16/9;max-width:100%;"><iframe width="100%" height="360" src="https://www.youtube.com/embed/8Ljgvt4H7Bs" title="新幹線の進化がすごい！日本の高速鉄道の歴史と未来" allowfullscreen style="border-radius:8px;border:none;width:100%;height:100%;"></iframe></div>
+				</div>
+			</div>
+		</section>
 		<section class="hero" aria-labelledby="heroHeading">
 			<h2 id="heroHeading" class="hero-head">学生が作った動画集</h2>
 			<p class="hero-lead">学生が作成した動画や、公式チャンネルの動画をまとめて一覧表示しています。カテゴリやキーワードで素早く探せます。</p>
@@ -170,7 +183,6 @@
 		empty: document.getElementById('emptyState'),
 		filterBar: document.getElementById('filterBar'),
 		resultCount: document.getElementById('resultCount'),
-		search: document.getElementById('searchInput'),
 		themeToggle: document.getElementById('themeToggle')
 	};
 
@@ -247,7 +259,7 @@
 		return a;
 	}
 
-	els.search.addEventListener('input', e => { state.keyword = e.target.value; applyFilter(); });
+
 
 	async function fetchVideos(){
 		if(!CONFIG.apiKey){
